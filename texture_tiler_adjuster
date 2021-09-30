@@ -1,0 +1,52 @@
+// Resizer Script to Scale textures
+// When prim is resized, textures will scale to repeat evenly across.
+// Script will not allow the prim to be smaller than 1x1x1, and will round the Vertical to an even value.
+
+float scale;
+vector size;
+integer index;
+float xsize;
+float ysize;
+float zsize;
+
+fix_texture()
+{
+    index=0;
+    size = llGetScale();
+    xsize=(float)size.x;
+    ysize=(float)size.y;
+    zsize=(integer)size.z;
+    if(xsize <1) {xsize=1;}
+    if(ysize <1) {ysize=1;}
+    if(zsize <1) {zsize=1;}
+    while (index < 7)
+        {
+            if((index==0)||(index==5)) {llScaleTexture(xsize, ysize, index); }
+            else if((index==1)||(index==3)) {llScaleTexture(xsize, zsize, index); }
+            else {    llScaleTexture(ysize, zsize, index);}
+ 
+            ++index;
+        }
+    if(zsize <1) {zsize=1;}
+     llSetPrimitiveParams([PRIM_SIZE,<xsize,ysize,(float)zsize>]);
+
+}
+
+ 
+default
+{
+    state_entry()
+    {
+
+        
+        fix_texture();
+    }
+    
+    changed(integer change)
+    {
+        if(change & CHANGED_SCALE){ 
+            fix_texture();
+        }
+    }
+}
+ 
